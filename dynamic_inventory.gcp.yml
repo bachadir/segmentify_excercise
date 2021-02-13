@@ -1,0 +1,5 @@
+plugin: gcp_compute
+projects:
+  - segmentify
+auth_kind: serviceaccount
+service_account_file: ../segmentify-b1c4f7958044.json

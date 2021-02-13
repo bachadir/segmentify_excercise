@@ -9,3 +9,6 @@ pip install requests google-auth
 </code>
 
 You need to pre-define a project on GCP, and pre-load the ssh keys to be able to connect to the instances.
+
+This ansible scripts need ansible 2.9+ with GCP modules installed.
+

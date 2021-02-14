@@ -30,3 +30,8 @@ create_instance.yml should be changed for your GCP account specs.
       region: "europe-west3" - region of your choice
 </code>
 
+
+Need to configure gcp os login for ssh from outside.
+
+https://cloud.google.com/compute/docs/instances/managing-instance-access#gcloud_1
+

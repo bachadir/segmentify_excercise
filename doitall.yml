@@ -7,6 +7,8 @@
       gcp_cred_file: ../segmentify-b1c4f7958044.json
       zone: "europe-west3-c"
       region: "europe-west3"
+      build_repo: https://github.com/bachadir/segmentify_app.git
+      build_version: Version-1
   tasks:
    - set_fact:
          random_vm_name: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
@@ -58,16 +60,34 @@
          scopes:
            - https://www.googleapis.com/auth/compute
      register: instance
-
-
    - name: Wait for SSH to come up
      wait_for: host={{ address.address }} port=22 delay=10 timeout=60
-
    - name: Add host to groupname
      add_host: hostname={{ address.address }} groupname=segmentify
-
    - name: Copy host address to file 
      ansible.builtin.copy: 
         content: '{{ address.address }}' 
         dest: ./hosts 
-   
+   - name: Send the service file
+     ansible.builtin.command:
+          cmd: scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /root/.ssh/google ./helloworld.service bahadirtasdelen_gmail_com@{{ address.address }}:/home/bahadirtasdelen_gmail_com
+   - name: Add the service 
+     ansible.builtin.command:
+          cmd: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /root/.ssh/google  bahadirtasdelen_gmail_com@{{ address.address }} 'sudo cp /home/bahadirtasdelen_gmail_com/helloworld.service /etc/systemd/system/ && sudo chown root:root /etc/systemd/system/helloworld.service && sudo systemctl enable helloworld.service && sudo setenforce 0 '
+   - name: Deployment
+     ansible.builtin.git:
+         repo: '{{ build_repo }}'
+         dest: ./segmentify_app
+         version: '{{ build_version }}'
+   - name: Build application
+     ansible.builtin.command:
+         cmd: go build -o ./segmentify_app/helloworld ./segmentify_app/main.go 
+         creates: ./segmentify_app/helloworld
+   - name: Deploy to server 
+     ansible.builtin.command:
+          cmd: scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /root/.ssh/google ./segmentify_app/helloworld bahadirtasdelen_gmail_com@{{ address.address }}:/home/bahadirtasdelen_gmail_com
+   - name: Start the service
+     ansible.builtin.command:
+          cmd: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /root/.ssh/google  bahadirtasdelen_gmail_com@{{ address.address }} 'sudo systemctl restart helloworld.service'
+   - name: Wait for http to come up
+     wait_for: host={{ address.address }} port=80 delay=10 timeout=60

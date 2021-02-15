@@ -18,7 +18,16 @@ This ansible scripts need ansible 2.9+ with GCP modules installed.
 
 You need to create a service account with compute engine access, and get the json auth file from GCP and keep it in the upper directory of the script
 
-create_instance.yml should be changed for your GCP account specs.
+
+Need to configure gcp os login for ssh from outside.
+
+https://cloud.google.com/compute/docs/instances/managing-instance-access#gcloud_1
+
+# createinstance.yml
+
+This playbook creates a VM on GCP with predefined service account and specs.
+
+Should be changed for your GCP account specs.
 
 
 <code>
@@ -31,7 +40,7 @@ create_instance.yml should be changed for your GCP account specs.
 </code>
 
 
-Need to configure gcp os login for ssh from outside.
+#doitall.yml
 
-https://cloud.google.com/compute/docs/instances/managing-instance-access#gcloud_1
+This playbook creates a vm on GCP, checks out a repository from git and builds the code in golang from the repository; and then deploys it to the server with the service, starts the application, checks if port 80 is up.
 

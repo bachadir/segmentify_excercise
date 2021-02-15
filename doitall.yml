@@ -9,6 +9,7 @@
       region: "europe-west3"
       build_repo: https://github.com/bachadir/segmentify_app.git
       build_version: Version-1
+      ssh_key_location: /root/.ssh/google
   tasks:
    - set_fact:
          random_vm_name: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=8') }}"
@@ -70,10 +71,10 @@
         dest: ./hosts 
    - name: Send the service file
      ansible.builtin.command:
-          cmd: scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /root/.ssh/google ./helloworld.service bahadirtasdelen_gmail_com@{{ address.address }}:/home/bahadirtasdelen_gmail_com
+          cmd: scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {{ ssh_key_location }} ./helloworld.service bahadirtasdelen_gmail_com@{{ address.address }}:/home/bahadirtasdelen_gmail_com
    - name: Add the service 
      ansible.builtin.command:
-          cmd: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /root/.ssh/google  bahadirtasdelen_gmail_com@{{ address.address }} 'sudo cp /home/bahadirtasdelen_gmail_com/helloworld.service /etc/systemd/system/ && sudo chown root:root /etc/systemd/system/helloworld.service && sudo systemctl enable helloworld.service && sudo setenforce 0 '
+          cmd: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {{ ssh_key_location }}  bahadirtasdelen_gmail_com@{{ address.address }} 'sudo cp /home/bahadirtasdelen_gmail_com/helloworld.service /etc/systemd/system/ && sudo chown root:root /etc/systemd/system/helloworld.service && sudo systemctl enable helloworld.service && sudo setenforce 0 '
    - name: Deployment
      ansible.builtin.git:
          repo: '{{ build_repo }}'
@@ -85,9 +86,9 @@
          creates: ./segmentify_app/helloworld
    - name: Deploy to server 
      ansible.builtin.command:
-          cmd: scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /root/.ssh/google ./segmentify_app/helloworld bahadirtasdelen_gmail_com@{{ address.address }}:/home/bahadirtasdelen_gmail_com
+          cmd: scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {{ ssh_key_location }} ./segmentify_app/helloworld bahadirtasdelen_gmail_com@{{ address.address }}:/home/bahadirtasdelen_gmail_com
    - name: Start the service
      ansible.builtin.command:
-          cmd: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /root/.ssh/google  bahadirtasdelen_gmail_com@{{ address.address }} 'sudo systemctl restart helloworld.service'
+          cmd: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {{ ssh_key_location }}  bahadirtasdelen_gmail_com@{{ address.address }} 'sudo systemctl restart helloworld.service'
    - name: Wait for http to come up
      wait_for: host={{ address.address }} port=80 delay=10 timeout=60

@@ -2,13 +2,13 @@
   hosts: localhost
   gather_facts: no
   vars:
-      app_server_ip: 
+      app_server_ip: 35.246.128.175
       build_repo: https://github.com/bachadir/segmentify_app.git
-      build_version: Version-1
+      build_version: Version-2
       ssh_key_location: /root/.ssh/google
       ssh_user: bahadirtasdelen_gmail_com
   tasks:
-   - name: Deployment
+   - name: Git Checkout
      ansible.builtin.git:
          repo: '{{ build_repo }}'
          dest: ./segmentify_app
@@ -24,4 +24,4 @@
      ansible.builtin.command:
          cmd: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {{ ssh_key_location }}  {{ ssh_user }}@{{ app_server_ip }} 'sudo systemctl restart helloworld.service'
    - name: Wait for http to come up
-         wait_for: host={{ app_server_ip }} port=80 delay=10 timeout=60
+     wait_for: host={{ app_server_ip }} port=80 delay=10 timeout=60

@@ -51,3 +51,14 @@ This playbook builds only a simple golang application, names it helloworld. Star
       build_repo: https://github.com/bachadir/segmentify_app.git        ---- GIT repository for the application
       build_version: Version-1											---- Version to checkout
       ssh_key_location: /root/.ssh/google 								---- ssh key location to connect to the vm
+      ssh_user: bahadirtasdelen_gmail_com								---- ssh user to login to the server
+
+# build_and_deploy.yml
+
+This playbook just checks out the code from git, builds it in golang and deploys it to the pre-deployed server. You need to have the IP address ready for the server and modify the variables in the playbook according to the specs you need.
+
+      app_server_ip:													---- Application server IP address 
+      build_repo: https://github.com/bachadir/segmentify_app.git        ---- GIT repository for the application
+      build_version: Version-1											---- Version to checkout
+      ssh_key_location: /root/.ssh/google 								---- ssh key location to connect to the vm
+      ssh_user: bahadirtasdelen_gmail_com								---- ssh user to login to the server

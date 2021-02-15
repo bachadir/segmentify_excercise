@@ -18,6 +18,8 @@ This ansible scripts need ansible 2.9+ with GCP modules installed.
 
 You need to create a service account with compute engine access, and get the json auth file from GCP and keep it in the upper directory of the script
 
+You also need to install golang to be able to build the application which will be deployed to the server. Playbooks are configured for a simple golang application.
+
 
 Need to configure gcp os login for ssh from outside.
 

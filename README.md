@@ -27,20 +27,27 @@ https://cloud.google.com/compute/docs/instances/managing-instance-access#gcloud_
 
 This playbook creates a VM on GCP with predefined service account and specs.
 
-Should be changed for your GCP account specs.
+Variables should be changed for your GCP account specs.
 
 
-<code>
-	  vars:
-      gcp_project: segmentify - should be your project
+      gcp_project: segmentify 							- should be your project
       gcp_cred_kind: serviceaccount
-      gcp_cred_file: ../segmentify-b1c4f7958044.json - your auth json file to the service account
-      zone: "europe-west3-c" - zone of your choice
-      region: "europe-west3" - region of your choice
-</code>
+      gcp_cred_file: ../segmentify-b1c4f7958044.json 	- your auth json file to the service account
+      zone: "europe-west3-c"						 	- zone of your choice
+      region: "europe-west3" 							- region of your choice
 
 
 # doitall.yml
 
 This playbook creates a vm on GCP, checks out a repository from git and builds the code in golang from the repository; and then deploys it to the server with the service, starts the application, checks if port 80 is up.
 
+This playbook builds only a simple golang application, names it helloworld. Startup scripts are also created for this name. To make this playbook work, variables should be edited inside.
+
+      gcp_project: segmentify 											---- GCP project name for vm
+      gcp_cred_kind: serviceaccount										---- GCP credential type
+      gcp_cred_file: ../segmentify-b1c4f7958044.json 					---- GCP service account credentials
+      zone: "europe-west3-c"											---- GCP zone
+      region: "europe-west3" 											---- GCP region
+      build_repo: https://github.com/bachadir/segmentify_app.git        ---- GIT repository for the application
+      build_version: Version-1											---- Version to checkout
+      ssh_key_location: /root/.ssh/google 								---- ssh key location to connect to the vm

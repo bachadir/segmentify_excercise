@@ -25,6 +25,8 @@ Need to configure gcp os login for ssh from outside.
 
 https://cloud.google.com/compute/docs/instances/managing-instance-access#gcloud_1
 
+I have run the scripts on a windows computer with ubuntu subsystem.
+
 # createinstance.yml
 
 This playbook creates a VM on GCP with predefined service account and specs.

@@ -40,7 +40,7 @@ Should be changed for your GCP account specs.
 </code>
 
 
-#doitall.yml
+# doitall.yml
 
 This playbook creates a vm on GCP, checks out a repository from git and builds the code in golang from the repository; and then deploys it to the server with the service, starts the application, checks if port 80 is up.
 

@@ -2,7 +2,7 @@
   hosts: localhost
   gather_facts: no
   vars:
-      app_server_ip: 35.246.128.175
+      app_server_ip: 35.246.144.115
       build_repo: https://github.com/bachadir/segmentify_app.git
       build_version: Version-2
       ssh_key_location: /root/.ssh/google
@@ -15,11 +15,14 @@
          version: '{{ build_version }}'
    - name: Build application
      ansible.builtin.command:
-         cmd: go build -o ./segmentify_app/helloworld ./segmentify_app/main.go 
-         creates: ./segmentify_app/helloworld
+         cmd: go build -o ./segmentify_app/helloworld-{{ build_version }} ./segmentify_app/main.go 
+         creates: ./segmentify_app/helloworld-{{ build_version }}
    - name: Deploy to server 
      ansible.builtin.command:
-         cmd: scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {{ ssh_key_location }} ./segmentify_app/helloworld {{ ssh_user }}@{{ app_server_ip }}:/home/{{ ssh_user }}
+         cmd: scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {{ ssh_key_location }} ./segmentify_app/helloworld-{{ build_version }} {{ ssh_user }}@{{ app_server_ip }}:/home/{{ ssh_user }}
+   - name: Change Symlink
+     ansible.builtin.command:
+         cmd: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {{ ssh_key_location }}  {{ ssh_user }}@{{ app_server_ip }} 'unlink /home/{{ ssh_user }}/helloworld && ln -s /home/{{ ssh_user }}/helloworld-{{build_version}} /home/{{ ssh_user }}/helloworld'
    - name: Start the service
      ansible.builtin.command:
          cmd: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {{ ssh_key_location }}  {{ ssh_user }}@{{ app_server_ip }} 'sudo systemctl restart helloworld.service'
